@@ -1,4 +1,5 @@
 ﻿using Coffee.DAO;
+using Coffee.DTO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,24 +21,25 @@ namespace Coffee
 
 		private void btnLogin_Click(object sender, EventArgs e)
 		{
-			string username = txtUserName.Text;
-			string password = txtPassword.Text;
-			if (login(username, password))
+			string userName = txtUserName.Text;
+			string passWord = txtPassword.Text;
+			if (login(userName, passWord))
 			{
-				Manager f = new Manager();
-				this.Hide();
-				f.ShowDialog();
-				this.Show();
+                Account loginAccount = AccountDAO.Instance.GetAccountByUserName(userName);
+                Manager f = new Manager(loginAccount);
+                this.Hide();
+                f.ShowDialog();
+                this.Show();
 			}
 			else
 			{
-				MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!!!");
+				MessageBox.Show("Sai tên tài khoản hoặc mật khẩu!");
 			}
 		}
 
 		bool login(string username,string password)
 		{
-			return AccountDAO.Instance.login(username, password);
+			return AccountDAO.Instance.Login(username, password);
 		}
 
 		private void btnExit_Click(object sender, EventArgs e)

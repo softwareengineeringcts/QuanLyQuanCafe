@@ -30,7 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AccountProfile));
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.txtUsername = new System.Windows.Forms.TextBox();
+			this.txtUserName = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.txtDisplayName = new System.Windows.Forms.TextBox();
@@ -55,20 +55,20 @@
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.txtUsername);
+			this.panel1.Controls.Add(this.txtUserName);
 			this.panel1.Controls.Add(this.label1);
 			this.panel1.Location = new System.Drawing.Point(16, 29);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(650, 59);
 			this.panel1.TabIndex = 0;
 			// 
-			// txtUsername
+			// txtUserName
 			// 
-			this.txtUsername.Location = new System.Drawing.Point(197, 17);
-			this.txtUsername.Name = "txtUsername";
-			this.txtUsername.ReadOnly = true;
-			this.txtUsername.Size = new System.Drawing.Size(398, 20);
-			this.txtUsername.TabIndex = 0;
+			this.txtUserName.Location = new System.Drawing.Point(197, 17);
+			this.txtUserName.Name = "txtUserName";
+			this.txtUserName.ReadOnly = true;
+			this.txtUserName.Size = new System.Drawing.Size(398, 20);
+			this.txtUserName.TabIndex = 0;
 			// 
 			// label1
 			// 
@@ -195,6 +195,7 @@
 			this.btnUpdate.TabIndex = 5;
 			this.btnUpdate.Text = "Cập nhật";
 			this.btnUpdate.UseVisualStyleBackColor = true;
+			this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
 			// 
 			// btnExit
 			// 
@@ -243,7 +244,7 @@
 		#endregion
 
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.TextBox txtUsername;
+		private System.Windows.Forms.TextBox txtUserName;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.TextBox txtDisplayName;

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,26 +16,30 @@ namespace Coffee
 {
 	public partial class Manager : Form
 	{
-		public Manager()
-		{
+        private Account loginAccount;
+
+        public Account LoginAccount
+        {
+            get { return loginAccount; }
+            set { loginAccount = value; ChangeAccount(loginAccount.Type); }
+        }
+
+		public Manager(Account acc)
+		{	
 			InitializeComponent();
+            this.LoginAccount = acc;
 			LoadTable();
 			LoadCategory();
 			LoadComboboxTable(cbSwitchTable);
 		}
-		void LoadCategory()
-		{
-			List<Category> listCategory = CategoryDAO.Instance.GetListCategory();
-			cbCategory.DataSource = listCategory;
-			cbCategory.DisplayMember = "Name";
-		}
 
-		void LoadFoodListByCategoryID(int id)
-		{
-			List<Food> listFood = FoodDAO.Instance.GetFoodByCategoryID(id);
-			cbFood.DataSource = listFood;
-			cbFood.DisplayMember = "Name";
-		}
+        void ChangeAccount(int type)
+        {
+            adminToolStripMenuItem.Enabled = type == 1;
+            thôngTinCáNhânToolStripMenuItem1.Text += " (" + LoginAccount.DisplayName + ")";
+        }
+
+
 		void LoadTable()
 		{
 			flpTable.Controls.Clear();
@@ -60,7 +65,7 @@ namespace Coffee
 				flpTable.Controls.Add(btn);
 			}
 		}
-		void ShowBill(int id)
+		public void ShowBill(int id)
 		{
 			lsvBill.Items.Clear();
 			List<Coffee.DTO.Menu> listBillInfo = MenuDAO.Instance.GetListMenuByTable(id);
@@ -88,6 +93,7 @@ namespace Coffee
 		{
 			int tableID = ((sender as Button).Tag as Table).ID;
 			lsvBill.Tag = (sender as Button).Tag;
+            txtTable.Text = ((sender as Button).Tag as Table).Name;
 			ShowBill(tableID);
 		}
 		private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
@@ -97,95 +103,122 @@ namespace Coffee
 
 		private void thôngTinCáNhânToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			AccountProfile f = new AccountProfile();
-			f.ShowDialog();
+            AccountProfile f = new AccountProfile(LoginAccount);
+            f.UpdateAccount += f_UpdateAccount;
+            f.ShowDialog();
+		}
+		void f_UpdateAccount(object sender, AccountEvent e)
+		{
+			thôngTinCáNhânToolStripMenuItem1.Text = "Thông tin tài khoản (" + e.Acc.DisplayName + ")";
 		}
 
 		private void adminToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Admin f = new Admin();
+            f.loginAccount = LoginAccount;
 			f.ShowDialog();
 		}
+      
 
-		private void Manager_Load(object sender, EventArgs e)
-		{
+        private void btnSwitchTable_Click(object sender, EventArgs e)
+        {
+            int id1 = (lsvBill.Tag as Table).ID;
+            int id2 = (cbSwitchTable.SelectedItem as Table).ID;
+            if (MessageBox.Show(string.Format("Bạn có thật sự muốn chuyển bàn {0} qua bàn {1}", (lsvBill.Tag as Table).Name, (cbSwitchTable.SelectedItem as Table).Name), "Thông báo", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+            {
+                TableDAO.Instance.SwitchTable(id1, id2);
+            }
+        }
+        void LoadCategory()
+        {
+            flpCategory.Controls.Clear();
 
-		}
+            List<Category> categoryList = CategoryDAO.Instance.GetListCategory();
 
-		private void cbCategory_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			int id = 0;
+            foreach (Category item in categoryList)
+            {
+                Button btn = new Button() { Width = CategoryDAO.CategoryWidth, Height = CategoryDAO.CategoryHeight };
+                btn.Text = item.Name + Environment.NewLine;
+                btn.Click += btn1_Click;
+                btn.Tag = item;
 
-			ComboBox cb = sender as ComboBox;
+                flpCategory.Controls.Add(btn);
+            }
+        }
+        void LoadFood(int id)
+        {
+            flpFood.Controls.Clear();
+            List<Food> FoodList = FoodDAO.Instance.GetFoodByCategoryID(id);
 
-			if (cb.SelectedItem == null)
-				return;
+            foreach (Food item in FoodList)
+            {
+                Button btn1 = new Button() { Width = FoodDAO.FoodWidth, Height = FoodDAO.FoodHeight };
+                btn1.Text = item.Name + Environment.NewLine;
+                btn1.Click += btn2_Click;
+                btn1.Tag = item;
 
-			Category selected = cb.SelectedItem as Category;
-			id = selected.ID;
 
-			LoadFoodListByCategoryID(id);
-		}
+                flpFood.Controls.Add(btn1);
+            }
+        }
 
-		private void btnAdd_Click(object sender, EventArgs e)
-		{
-			Table table = lsvBill.Tag as Table;
+        private void btn2_Click(object sender, EventArgs e)
+        {
+            Table table = lsvBill.Tag as Table;
+            if (table == null)
+            {
+                MessageBox.Show("Hãy chọn bàn trước");
+                return;
+            }
 
-			int idBill = BillDAO.Instance.GetUncheckBillIDByTableID(table.ID);
-			int foodID = (cbFood.SelectedItem as Food).ID;
-			int count = (int)nmFoodCount.Value;
+            int idBill = BillDAO.Instance.GetUncheckBillIDByTableID(table.ID);
+            int foodID = ((sender as Button).Tag as Food).ID;
+            int count = (int)nmFoodCount.Value;
+            if (idBill == -1)
+            {
+                BillDAO.Instance.InsertBill(table.ID);
+                BillInfoDAO.Instance.InsertBillInfo(BillDAO.Instance.GetMaxIDBill(), foodID, count);
+            }
+            else
+            {
+                BillInfoDAO.Instance.InsertBillInfo(idBill, foodID, count);
+            }
 
-			if (idBill == -1)
-			{
-				BillDAO.Instance.InsertBill(table.ID);
-				BillInfoDAO.Instance.InsertBillInfo(BillDAO.Instance.GetMaxIDBill(), foodID, count);
-			}
-			else
-			{
-				BillInfoDAO.Instance.InsertBillInfo(idBill, foodID, count);
-			}
+            ShowBill(table.ID);
+            LoadTable();
+        }
+        private void btn1_Click(object sender, EventArgs e)
+        {
+            int id = ((sender as Button).Tag as Category).ID;
+            LoadFood(id);
+        }
 
-			ShowBill(table.ID);
-			LoadTable();
-		}
+        private void btnCheckOut_Click(object sender, EventArgs e)
+        {
+            Table table = lsvBill.Tag as Table;
 
-		private void flpTable_Paint(object sender, PaintEventArgs e)
-		{
-
-		}
-
-		private void btnCheckout_Click(object sender, EventArgs e)
-		{
-			Table table = lsvBill.Tag as Table;
-
-			int idBill = BillDAO.Instance.GetUncheckBillIDByTableID(table.ID);
-			int discount = (int)nmDiscount.Value;
-
-			double totalPrice = Convert.ToDouble(txtTotalPrice.Text.Split(',')[0]);
-			double finalTotalPrice = totalPrice - (totalPrice / 100) * discount;
-
-			if (idBill != -1)
-			{
-				if (MessageBox.Show(string.Format("Tổng tiền cho hóa đơn này là : {0} \n Bạn có chắc thanh toán hóa đơn cho bàn {1}? ",finalTotalPrice,table.Name), "Thông báo", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-				{
-					BillDAO.Instance.CheckOut(idBill, discount,(float) finalTotalPrice);
-					ShowBill(table.ID);
-
-					LoadTable();
-				}
-			}
-		}
-
-		private void btnSwitchTable_Click(object sender, EventArgs e)
-		{
-			int id1 = (lsvBill.Tag as Table).ID;
-			int id2 = (cbSwitchTable.SelectedItem as Table).ID;
-			if (MessageBox.Show(string.Format("Bạn có thật sự muốn chuyển bàn {0} qua bàn {1}", (lsvBill.Tag as Table).Name, (cbSwitchTable.SelectedItem as Table).Name), "Thông báo", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-			{
-				TableDAO.Instance.SwitchTable(id1, id2);
-
-				LoadTable();
-			}
-		}
+            int idBill = BillDAO.Instance.GetUncheckBillIDByTableID(table.ID);
+            int discount = (int)nmDiscount.Value;
+            double Received = Convert.ToDouble(txtReceived.Text.Split(',')[0]);
+            double totalPrice = Convert.ToDouble(txtTotalPrice.Text.Split(',')[0]);
+            double finalTotalPrice = totalPrice - (totalPrice / 100) * discount;
+            double Payment = Received - finalTotalPrice;
+            if (idBill != -1)
+            {
+                if (Received < totalPrice)
+                {
+                    MessageBox.Show("Số tiền nhận phải lớn hơn tổng tiền hóa đơn !!!", "Thông báo", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    if (MessageBox.Show(string.Format("Tổng tiền cho hóa đơn này là : {0} \n Số tiền phụ cho khách hàng là : {1} \n Bạn có chắc thanh toán hóa đơn cho bàn {2}? ", finalTotalPrice, Payment, table.Name), "Thông báo", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+                    {
+                        BillDAO.Instance.CheckOut(idBill, discount, (float)finalTotalPrice);
+                        ShowBill(table.ID);
+                        LoadTable();
+                    }
+                }
+            }
+        }
 	}
 }

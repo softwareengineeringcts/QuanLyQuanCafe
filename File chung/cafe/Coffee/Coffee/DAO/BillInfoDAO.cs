@@ -20,6 +20,10 @@ namespace Coffee.DAO
 
 		private BillInfoDAO() { }
 
+        public void DeleteBillInfoByFoodID(int id)
+        {
+            DataProvider.Instance.ExecuteQuery("delete  dbo.BillInfo WHERE idFood = " + id);
+        }
 		public List<BillInfo> GetListBillInfo(int id)
 		{
 			List<BillInfo> listBillInfo = new List<BillInfo>();
@@ -36,7 +40,7 @@ namespace Coffee.DAO
 		}
 		public void InsertBillInfo(int idBill, int idFood, int count)
 		{
-			DataProvider.Instance.ExecuteNonQuery("exec USP_InsertBillInfo @idBill , @idFood , @count", new object[] { idBill, idFood, count });
+            DataProvider.Instance.ExecuteNonQuery("exec USP_InsertBillInfo @idBill , @idFood , @count", new object[] { idBill, idFood, count });
 		}
 	}
 }

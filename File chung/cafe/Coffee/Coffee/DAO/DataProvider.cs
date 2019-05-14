@@ -19,7 +19,7 @@ namespace Coffee.DAO
 
 		private DataProvider() { }
 
-		private string connectionSTR = "Data Source=DESKTOP-OVC9B5E;Initial Catalog=QuanLyQuanCafe;Integrated Security=True";
+		private string connectionSTR = "Data Source=DESKTOP-OVC9B5E\\MSSQLSERVER1;Initial Catalog=QuanLyQuanCafe;Integrated Security=True";
 
 		public DataTable ExecuteQuery(string query, object[] parameter = null)
 		{
@@ -55,9 +55,9 @@ namespace Coffee.DAO
 			return data;
 		}
 
-		public Boolean ExecuteNonQuery(string query, object[] parameter = null)
+		public int ExecuteNonQuery(string query, object[] parameter = null)
 		{
-			Boolean data = false;
+			int data = 0;
 
 			using (SqlConnection connection = new SqlConnection(connectionSTR))
 			{
@@ -79,7 +79,7 @@ namespace Coffee.DAO
 					}
 				}
 
-				command.ExecuteNonQuery();
+				data = command.ExecuteNonQuery();
 
 				connection.Close();
 			}
