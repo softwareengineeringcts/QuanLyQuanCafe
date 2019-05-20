@@ -40,7 +40,7 @@ namespace Coffee
         }
 
 
-		void LoadTable()
+		void LoadTable()  //Gọi và hiển thị danh sách bàn
 		{
 			flpTable.Controls.Clear();
 
@@ -58,14 +58,14 @@ namespace Coffee
 						btn.BackColor = Color.LightGray;
 						break;
 					default:
-						btn.BackColor = Color.LightSeaGreen;
+                        btn.BackColor = Color.LightBlue;
 						break;
 				}
 
 				flpTable.Controls.Add(btn);
 			}
 		}
-		public void ShowBill(int id)
+		public void ShowBill(int id) //Hiển thị bill trrong listview
 		{
 			lsvBill.Items.Clear();
 			List<Coffee.DTO.Menu> listBillInfo = MenuDAO.Instance.GetListMenuByTable(id);
@@ -83,13 +83,13 @@ namespace Coffee
 			txtTotalPrice.Text = totalPrice.ToString();
 		}
 
-		void LoadComboboxTable(ComboBox cb)
+		void LoadComboboxTable(ComboBox cb) // Hiển thị combobox đổi bàn
 		{
 			cb.DataSource = TableDAO.Instance.LoadTableList();
 			cb.DisplayMember = "Name";
 		}
 
-		void btn_Click(Object sender, EventArgs e)
+		void btn_Click(Object sender, EventArgs e) // Sự kiện khi bấm vào bàn
 		{
 			int tableID = ((sender as Button).Tag as Table).ID;
 			lsvBill.Tag = (sender as Button).Tag;
@@ -120,7 +120,7 @@ namespace Coffee
 		}
       
 
-        private void btnSwitchTable_Click(object sender, EventArgs e)
+        private void btnSwitchTable_Click(object sender, EventArgs e) // Đổi bàn
         {
             int id1 = (lsvBill.Tag as Table).ID;
             int id2 = (cbSwitchTable.SelectedItem as Table).ID;
@@ -129,7 +129,7 @@ namespace Coffee
                 TableDAO.Instance.SwitchTable(id1, id2);
             }
         }
-        void LoadCategory()
+        void LoadCategory() // Hiển thị danh sách button của Category đồ uống
         {
             flpCategory.Controls.Clear();
 
@@ -145,7 +145,7 @@ namespace Coffee
                 flpCategory.Controls.Add(btn);
             }
         }
-        void LoadFood(int id)
+        void LoadFood(int id) //Hiển thị danh sách button của mục đồ uống
         {
             flpFood.Controls.Clear();
             List<Food> FoodList = FoodDAO.Instance.GetFoodByCategoryID(id);
@@ -162,7 +162,7 @@ namespace Coffee
             }
         }
 
-        private void btn2_Click(object sender, EventArgs e)
+        private void btn2_Click(object sender, EventArgs e) //Sự kiện khi bấm vào button đồ uống
         {
             Table table = lsvBill.Tag as Table;
             if (table == null)
@@ -174,7 +174,7 @@ namespace Coffee
             int idBill = BillDAO.Instance.GetUncheckBillIDByTableID(table.ID);
             int foodID = ((sender as Button).Tag as Food).ID;
             int count = (int)nmFoodCount.Value;
-            if (idBill == -1)
+            if (idBill == -1) // chuyển đến id lớn nhất
             {
                 BillDAO.Instance.InsertBill(table.ID);
                 BillInfoDAO.Instance.InsertBillInfo(BillDAO.Instance.GetMaxIDBill(), foodID, count);
@@ -187,7 +187,7 @@ namespace Coffee
             ShowBill(table.ID);
             LoadTable();
         }
-        private void btn1_Click(object sender, EventArgs e)
+        private void btn1_Click(object sender, EventArgs e)   //Sự kiện khi bấm button Category đồ uống
         {
             int id = ((sender as Button).Tag as Category).ID;
             LoadFood(id);
@@ -199,10 +199,10 @@ namespace Coffee
 
             int idBill = BillDAO.Instance.GetUncheckBillIDByTableID(table.ID);
             int discount = (int)nmDiscount.Value;
-            double Received = Convert.ToDouble(txtReceived.Text.Split(',')[0]);
-            double totalPrice = Convert.ToDouble(txtTotalPrice.Text.Split(',')[0]);
-            double finalTotalPrice = totalPrice - (totalPrice / 100) * discount;
-            double Payment = Received - finalTotalPrice;
+            double Received = Convert.ToDouble(txtReceived.Text.Split(',')[0]); // Tiền nhận vào
+            double totalPrice = Convert.ToDouble(txtTotalPrice.Text.Split(',')[0]); //Tổng tiền
+            double finalTotalPrice = totalPrice - (totalPrice / 100) * discount; // Tổng tiền sau khi discount
+            double Payment = Received - finalTotalPrice; //Tiền phụ cho khách
             if (idBill != -1)
             {
                 if (Received < totalPrice)

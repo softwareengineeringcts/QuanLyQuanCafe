@@ -19,9 +19,9 @@ namespace Coffee.DAO
 
 		private DataProvider() { }
 
-		private string connectionSTR = "Data Source=DESKTOP-OVC9B5E\\MSSQLSERVER1;Initial Catalog=QuanLyQuanCafe;Integrated Security=True";
+		private string connectionSTR = "Data Source=DESKTOP-OVC9B5E\\MSSQLSERVER1;Initial Catalog=QuanLyQuanCafe;Integrated Security=True"; //Lấy dữ liệu trong database
 
-		public DataTable ExecuteQuery(string query, object[] parameter = null)
+		public DataTable ExecuteQuery(string query, object[] parameter = null) //kiểm tra lệnh từ csdl
 		{
 			DataTable data = new DataTable();
 
@@ -55,7 +55,7 @@ namespace Coffee.DAO
 			return data;
 		}
 
-		public int ExecuteNonQuery(string query, object[] parameter = null)
+		public int ExecuteNonQuery(string query, object[] parameter = null) //thực thi lệnh từ csdl
 		{
 			int data = 0;
 

@@ -41,8 +41,8 @@ namespace Coffee.DAO
 		{
 			List<Food> list = new List<Food>();
 
-			string query = "select * from Food where idCategory = " + id;
-
+			string query = "select * from Food where idCategory = " + id; // Lấy đồ uống theo id 
+            
 			DataTable data = DataProvider.Instance.ExecuteQuery(query);
 
 			foreach (DataRow item in data.Rows)
@@ -57,7 +57,7 @@ namespace Coffee.DAO
         {
             List<Food> list = new List<Food>();
 
-            string query = string.Format("SELECT * FROM dbo.Food WHERE dbo.fuConvertToUnsign1(name) LIKE N'%' + dbo.fuConvertToUnsign1(N'{0}') + '%'", name);
+            string query = string.Format("SELECT * FROM dbo.Food WHERE dbo.fuConvertToUnsign1(name) LIKE N'%' + dbo.fuConvertToUnsign1(N'{0}') + '%'", name); // Tìm kiếm đồ uống có tên gần giống
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
 

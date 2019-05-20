@@ -20,7 +20,7 @@ namespace Coffee.DAO
 
 		private AccountDAO() { }
 
-		public bool Login(string userName, string passWord)
+		public bool Login(string userName, string passWord) //Lấy dữ liệu từ bảng Account trong csdl
 		{
 			string query = "USP_Login @userName , @passWord";
 
@@ -31,17 +31,17 @@ namespace Coffee.DAO
 
 		public bool UpdateAccount(string userName, string displayName, string pass, string newPass)
 		{
-			int result = DataProvider.Instance.ExecuteNonQuery("exec USP_UpdateAccount @userName , @displayName , @password , @newPassword", new object[] { userName, displayName, pass, newPass });
+			int result = DataProvider.Instance.ExecuteNonQuery("exec USP_UpdateAccount @userName , @displayName , @password , @newPassword", new object[] { userName, displayName, pass, newPass }); // Dùng thủ tục UpdateAccount trong csdl để chỉnh sửa thông tin
 
 			return result > 0;
 		}
         public DataTable GetListAccount()
         {
-            return DataProvider.Instance.ExecuteQuery("SELECT UserName, DisplayName, Type FROM dbo.Account");
+            return DataProvider.Instance.ExecuteQuery("SELECT UserName, DisplayName, Type FROM dbo.Account");  //Lấy dữ liệu từ bảng Account trong csdl
         }
 		public Account GetAccountByUserName(string userName)
 		{
-			DataTable data = DataProvider.Instance.ExecuteQuery("Select * from account where userName = '" + userName + "'");
+			DataTable data = DataProvider.Instance.ExecuteQuery("Select * from account where userName = '" + userName + "'"); //Lấy tài khoản theo tên đăng nhập
 
 			foreach (DataRow item in data.Rows)
 			{
@@ -52,7 +52,7 @@ namespace Coffee.DAO
 		}
         public bool InsertAccount(string name, string displayName, int type)
         {
-            string query = string.Format("INSERT dbo.Account ( UserName, DisplayName, Type )VALUES  ( N'{0}', N'{1}', {2})", name, displayName, type);
+            string query = string.Format("INSERT dbo.Account ( UserName, DisplayName, Type )VALUES  ( N'{0}', N'{1}', {2})", name, displayName, type); //thêm tài khoản
             int result = DataProvider.Instance.ExecuteNonQuery(query);
 
             return result > 0;
@@ -60,7 +60,7 @@ namespace Coffee.DAO
 
         public bool UpdateAccount(string name, string displayName, int type)
         {
-            string query = string.Format("UPDATE dbo.Account SET DisplayName = N'{1}', Type = {2} WHERE UserName = N'{0}'", name, displayName, type);
+            string query = string.Format("UPDATE dbo.Account SET DisplayName = N'{1}', Type = {2} WHERE UserName = N'{0}'", name, displayName, type); //chỉnh sửa tài khoản
             int result = DataProvider.Instance.ExecuteNonQuery(query);
 
             return result > 0;
@@ -76,7 +76,7 @@ namespace Coffee.DAO
 
         public bool ResetPassword(string name)
         {
-            string query = string.Format("update account set password = N'0' where UserName = N'{0}'", name);
+            string query = string.Format("update account set password = N'0' where UserName = N'{0}'", name); //xóa tài khoản
             int result = DataProvider.Instance.ExecuteNonQuery(query);
 
             return result > 0;

@@ -19,8 +19,8 @@ namespace Coffee.DAO
 		}
 
 		private CategoryDAO() { }
-        public static int CategoryWidth = 200;
-        public static int CategoryHeight = 100;
+        public static int CategoryWidth = 200; //chiều dài button danh sách
+        public static int CategoryHeight = 100; //chiều cao button danh sách
 		public List<Category> GetListCategory()
 		{
 			List<Category> list = new List<Category>();

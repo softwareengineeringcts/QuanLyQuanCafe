@@ -418,9 +418,9 @@ namespace Coffee
         {
             int sumRecord = BillDAO.Instance.GetNumBillListByDate(dtpkFromDate.Value, dtpkToDate.Value);
 
-            int lastPage = sumRecord / 10;
+            int lastPage = sumRecord / 20;
 
-            if (sumRecord % 10 != 0)
+            if (sumRecord % 20 != 0)
                 lastPage++;
 
             txtPageBill.Text = lastPage.ToString();

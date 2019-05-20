@@ -22,13 +22,13 @@ namespace Coffee.DAO
 
         public void DeleteBillInfoByFoodID(int id)
         {
-            DataProvider.Instance.ExecuteQuery("delete  dbo.BillInfo WHERE idFood = " + id);
+            DataProvider.Instance.ExecuteQuery("delete  dbo.BillInfo WHERE idFood = " + id); //xóa thông tin hóa đơn
         }
 		public List<BillInfo> GetListBillInfo(int id)
 		{
 			List<BillInfo> listBillInfo = new List<BillInfo>();
 
-			DataTable data = DataProvider.Instance.ExecuteQuery("SELECT * FROM dbo.BillInfo WHERE idBill = " + id);
+			DataTable data = DataProvider.Instance.ExecuteQuery("SELECT * FROM dbo.BillInfo WHERE idBill = " + id); //lấy thông tin hóa đơn cho vào datatable
 
 			foreach (DataRow item in data.Rows)
 			{
@@ -40,7 +40,7 @@ namespace Coffee.DAO
 		}
 		public void InsertBillInfo(int idBill, int idFood, int count)
 		{
-            DataProvider.Instance.ExecuteNonQuery("exec USP_InsertBillInfo @idBill , @idFood , @count", new object[] { idBill, idFood, count });
+            DataProvider.Instance.ExecuteNonQuery("exec USP_InsertBillInfo @idBill , @idFood , @count", new object[] { idBill, idFood, count }); //thêm hóa đơn theo thủ tục
 		}
 	}
 }

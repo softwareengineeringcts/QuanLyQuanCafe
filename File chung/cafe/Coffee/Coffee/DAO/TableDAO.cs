@@ -25,14 +25,14 @@ namespace Coffee.DAO
 
 		public void SwitchTable(int id1, int id2)
 		{
-			DataProvider.Instance.ExecuteQuery("USP_SwitchTabel @idTable1 , @idTabel2", new object[] { id1, id2 });
+			DataProvider.Instance.ExecuteQuery("USP_SwitchTabel @idTable1 , @idTabel2", new object[] { id1, id2 }); //Đổi bàn
 		}
 
 		public List<Table> LoadTableList()
 		{
 			List<Table> tableList = new List<Table>();
 
-			DataTable data = DataProvider.Instance.ExecuteQuery("USP_GetTableList");
+			DataTable data = DataProvider.Instance.ExecuteQuery("USP_GetTableList"); //Lấy danh sách bàn
 
 			foreach (DataRow item in data.Rows)
 			{

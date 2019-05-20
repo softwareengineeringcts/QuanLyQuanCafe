@@ -23,7 +23,7 @@ namespace Coffee.DAO
 
 		public int GetUncheckBillIDByTableID(int id)
 		{
-			DataTable data = DataProvider.Instance.ExecuteQuery("SELECT * FROM dbo.Bill WHERE idTable = " + id + " AND status = 0");
+			DataTable data = DataProvider.Instance.ExecuteQuery("SELECT * FROM dbo.Bill WHERE idTable = " + id + " AND status = 0"); //Lấy thông tin hóa đơn theo bàn
 
 			if (data.Rows.Count > 0)
 			{
@@ -35,7 +35,7 @@ namespace Coffee.DAO
 		}
 		public void CheckOut(int id, int discount, float totalPrice)
 		{
-			string query = "UPDATE dbo.Bill SET dateCheckOut = GETDATE(), status = 1, " + "discount = " + discount + ", totalPrice = " + totalPrice + " WHERE id = " + id;
+			string query = "UPDATE dbo.Bill SET dateCheckOut = GETDATE(), status = 1, " + "discount = " + discount + ", totalPrice = " + totalPrice + " WHERE id = " + id; //truy vấn khi thanh toán
 			DataProvider.Instance.ExecuteNonQuery(query);
 		}
 		public void InsertBill(int id)
@@ -54,7 +54,7 @@ namespace Coffee.DAO
 
         public int GetNumBillListByDate(DateTime checkIn, DateTime checkOut)
         {
-            return (int)DataProvider.Instance.ExecuteScalar("exec USP_GetNumBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut });
+            return (int)DataProvider.Instance.ExecuteScalar("exec USP_GetNumBillByDate @checkIn , @checkOut", new object[] { checkIn, checkOut }); // xem hóa đơn theo giờ vào ra
         }
 		public int GetMaxIDBill()
 		{

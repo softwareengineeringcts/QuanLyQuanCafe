@@ -47,5 +47,6 @@ E:\cafe\Coffee\Coffee\obj\Debug\Coffee.Login.resources
 E:\cafe\Coffee\Coffee\obj\Debug\Coffee.Manager.resources
 E:\cafe\Coffee\Coffee\obj\Debug\Coffee.Properties.Resources.resources
 E:\cafe\Coffee\Coffee\obj\Debug\Coffee.csproj.GenerateResource.Cache
-E:\cafe\Coffee\Coffee\obj\Debug\Coffee.csprojResolveAssemblyReference.cache
 E:\cafe\Coffee\Coffee\obj\Debug\Coffee.CheckOut.resources
+E:\cafe\Coffee\Coffee\obj\Debug\Coffee.csprojAssemblyReference.cache
+E:\cafe\Coffee\Coffee\obj\Debug\Coffee.csproj.CoreCompileInputs.cache
